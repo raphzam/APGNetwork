@@ -10,6 +10,7 @@ public class Post {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
 
+    @Lob
     private String text;
 
     @ManyToOne (fetch = FetchType.EAGER)
