@@ -30,7 +30,8 @@ public class HomeController {
         }
 
         model.addAttribute("newPost", new Post());
-        model.addAttribute("feed", postRepository.findAll());
+//        model.addAttribute("feed", postRepository.findAll());
+        model.addAttribute("feed", postRepository.findByOrderByIdDesc());
         return "index";
     }
 
@@ -113,7 +114,12 @@ public class HomeController {
     }
 
     @RequestMapping("/profile/{username}")
-    public String userProfile(@PathVariable("username") String username, Model model) {
+    public String userProfile(@PathVariable("username") String username, Model model, Principal principal) {
+
+        if (principal != null) {
+            model.addAttribute("sessionUser", principal.getName());
+        }
+
 
         User userProfile = userRepository.findByUsername(username);
         model.addAttribute("profile", userProfile);

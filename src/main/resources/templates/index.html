@@ -9,6 +9,7 @@
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
           integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <div th:replace="base::head"></div>
 
     <title>Home</title>
 </head>
@@ -21,23 +22,22 @@
 <div th:if="${message}"></div>
 
 <div sec:authorize="isAuthenticated()">
+
     <div sec:authentication="name"></div>
-</div>
-
-<form th:action="@{/processpost}" th:object="${newPost}" method="post">
+    <form th:action="@{/processpost}" th:object="${newPost}" method="post">
     <textarea th:field="*{text}">
-
-
     </textarea>
+        <input type="submit" value="Post">
+    </form>
 
-    <input type="submit" value="Post">
-</form>
+</div>
 
 <div th:each="post : ${feed}">
 
-    <p>ID: [[${post.id}]] <br>
+    <p>Post#: [[${post.id}]] <br>
         [[${post.text}]] <br>
-        Posted By: <a th:href="@{/profile/{username} (username=${post.author.username})}">[[${post.author.username}]]</a>
+        Posted By: <a
+                th:href="@{/profile/{username} (username=${post.author.username})}">[[${post.author.username}]]</a>
     </p>
 
     <div th:if="${post.author.username} == ${sessionUser}">

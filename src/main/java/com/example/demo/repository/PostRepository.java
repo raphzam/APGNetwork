@@ -10,4 +10,6 @@ public interface PostRepository extends CrudRepository<Post, Long> {
 
 //TODO: Sort by Date
 
+    Iterable<Post> findByOrderByIdDesc();
+
 }
