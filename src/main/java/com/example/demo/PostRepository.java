@@ -1,9 +1,12 @@
 package com.example.demo;
 
+
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface UserRepository extends CrudRepository<User, Long> {
-    User findByUsername(String username);
+public interface PostRepository extends CrudRepository<Post, Long> {
+
+//TODO: Sort by Date
+
 }

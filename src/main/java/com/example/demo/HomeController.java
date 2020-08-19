@@ -3,10 +3,9 @@ package com.example.demo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
+
+import java.security.Principal;
 
 @Controller
 public class HomeController {
@@ -17,34 +16,40 @@ public class HomeController {
     @Autowired
     RoleRepository roleRepository;
 
+    @Autowired
+    PostRepository postRepository;
+
     @RequestMapping("/")
-    public String index(){
+    public String index(Model model) {
+
+        model.addAttribute("newPost", new Post());
+        model.addAttribute("feed", postRepository.findAll());
         return "index";
     }
 
     @RequestMapping("/login")
-    public String login(){
+    public String login() {
         return "login";
     }
 
     @RequestMapping("/admin")
-    public String admin(){
+    public String admin() {
         return "admin";
     }
 
     @RequestMapping("/secure")
-    public String secure(){
+    public String secure() {
         return "secure";
     }
 
     @GetMapping("/signup")
-    public String loadSignUpForm(Model model){
+    public String loadSignUpForm(Model model) {
         model.addAttribute("user", new User());
         return "signup";
     }
 
     @PostMapping("/processregister")
-    public String processRegistration(@ModelAttribute User user, Model model){
+    public String processRegistration(@ModelAttribute User user, Model model) {
 
         user.setEnabled(true);
         userRepository.save(user);
@@ -55,4 +60,37 @@ public class HomeController {
 
         return "login";
     }
+
+    @PostMapping("/processpost")
+    public String processPost(@ModelAttribute Post post, Principal principal) {
+        if (principal != null) {
+            String username = principal.getName();
+            post.setAuthor(userRepository.findByUsername(username));
+        }
+        postRepository.save(post);
+        return "redirect:/";
+    }
+
+    @GetMapping("/newpost")
+    public String loadPostForm() {
+        return "";
+    }
+
+    @RequestMapping("/updatepost/{id}")
+    public String updatePost(@PathVariable("id") long id, Principal principal, Model model) {
+
+        Post thisPost = postRepository.findById(id).get();
+
+        String username = principal.getName();
+        User sessionUser = userRepository.findByUsername(username);
+
+        if (sessionUser == thisPost.getAuthor()) {
+            model.addAttribute("post", thisPost);
+            return "postform";
+        } else {
+            return "redirect:/";
+        }
+    }
+
+
 }
