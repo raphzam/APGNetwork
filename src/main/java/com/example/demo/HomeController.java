@@ -1,5 +1,8 @@
 package com.example.demo;
 
+import com.example.demo.repository.PostRepository;
+import com.example.demo.repository.RoleRepository;
+import com.example.demo.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -22,7 +25,7 @@ public class HomeController {
     @RequestMapping("/")
     public String index(Model model, Principal principal) {
 
-        if (principal!=null) {
+        if (principal != null) {
             model.addAttribute("sessionUser", principal.getName());
         }
 
@@ -97,18 +100,24 @@ public class HomeController {
     }
 
     @RequestMapping("/deletepost/{id}")
-    public String deletePost(@PathVariable("id") long id, Principal principal, Model model){
+    public String deletePost(@PathVariable("id") long id, Principal principal, Model model) {
 
         Post thisPost = postRepository.findById(id).get();
 
         String username = principal.getName();
         User sessionUser = userRepository.findByUsername(username);
-
-        if (sessionUser == thisPost.getAuthor()){
+        if (sessionUser == thisPost.getAuthor()) {
             postRepository.delete(thisPost);
         }
-
         return "redirect:/";
+    }
+
+    @RequestMapping("/profile/{username}")
+    public String userProfile(@PathVariable("username") String username, Model model) {
+
+        User userProfile = userRepository.findByUsername(username);
+        model.addAttribute("profile", userProfile);
+        return "profile";
 
     }
 

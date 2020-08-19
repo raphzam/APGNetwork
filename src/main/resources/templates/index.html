@@ -37,9 +37,8 @@
 
     <p>ID: [[${post.id}]] <br>
         [[${post.text}]] <br>
-
+        Posted By: <a th:href="@{/profile/{username} (username=${post.author.username})}">[[${post.author.username}]]</a>
     </p>
-    Post Author Username: <p th:text="${post.author.username}"></p>
 
     <div th:if="${post.author.username} == ${sessionUser}">
         <a th:href="@{/deletepost/{id} (id=${post.id})}">Delete</a> <br>
